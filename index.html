@@ -9,12 +9,138 @@
 
         }
       }
+      *{
+        border: 1px solid gray; /*캔버스 크기 파악*/
+        margin: auto;
+      }
+      canvas{
+        display: block;
+      }
     </style>
   </head>
-  <body>
-    <canvas></canvas>
+  <body onload = "start()">
+    <canvas id="C" width="800" height="500"></canvas>
     <script type="text/javascript"> // 여기서부터 자바스크립트
-      document.write("Hello, world!");
+
+      let c = document.getElementById('C')
+      let ctx = c.getContext("2d")
+      window.addEventListener('keydown', function(e){
+        if(e.keyCode == 68){pc.x += 5} // D키를 누르면 오른쪽으로 이동
+        else if(e.keyCode == 65){pc.x -= 5} // A키를 누르면 왼쪽으로 이동
+        else if(e.keyCode == 32){pc.jump()} // 스페이스바를 누르면 점프
+      })
+
+      // 캐릭터 만들기
+      let pc = {
+        x: 300,
+        y: 250,
+        jump: function(){
+          for(i=0;i<20;i++){
+            if(this.y<250){
+              this.y += i
+            } else {
+              this.y -= i
+            }
+          }
+        },
+        drawing: function(){
+          ctx.fillStyle = 'red';
+          ctx.fillRect(this.x, this.y, 60, 80);
+          ctx.fillStyle = 'PeachPuff';
+          ctx.fillRect(this.x, this.y, 60, 40)
+          ctx.fillStyle = 'purple'
+          ctx.fillRect(this.x+10, this.y+20, 5, 10)
+          ctx.fillRect(this.x+40, this.y+20, 5, 10)
+          ctx.fillRect(this.x, this.y, 20, 15)
+          ctx.fillRect(this.x, this.y, 60, 10)
+          ctx.fillRect(this.x+25, this.y, 20, 15)
+        }
+      }
+
+      // 미니맵 만들기
+      let map = {
+        drawing: function(){
+          ctx.fillRect(0, 0, 150, 100)
+        }
+      }
+
+      //퀘스트창 만들기
+      let quest = {
+        x: 200,
+        drawing: function(){
+          ctx.fillRect(c.width-this.x, 0, this.x, 100)
+        }
+      }
+
+      let myPage = {
+        y: 100,
+
+        //가방 만들기
+        myBag: {
+          drawing: function(){
+            ctx.fillStyle = 'tomato'
+            ctx.fillRect(0, c.height-100, 120, 100/3)
+          }
+        },
+
+        //스테이터스 만들기 (램프 시간 표시)
+        myStat: {
+          drawing: function(){
+            let y = (100/3)*2
+            ctx.fillStyle = 'salmon'
+            ctx.fillRect(0, c.height-y, 120, 100/3)
+          }
+        },
+
+        //기타 등등.
+        etc: {
+          drawing: function(){
+            let y = (100/3)
+            ctx.fillStyle = 'pink'
+            ctx.fillRect(0, c.height-y, 120, 100/3)
+          }
+        },
+
+        // 3단 그라데이션
+        drawing: function(){
+          ctx.fillRect(0, c.height-this.y, 120, this.y)
+          this.myBag.drawing()
+          this.myStat.drawing()
+          this.etc.drawing()
+        }
+      }
+
+      //채팅 표시 만들기
+      let chat = {
+        x: 680,
+        y: 100,
+        drawing: function(){
+          ctx.fillStyle = 'lightgray'
+          ctx.fillRect(c.width-this.x, c.height-this.y, this.x, this.y)
+        }
+      }
+
+      //배경 만들기
+      let background = {
+        drawing: function(){
+
+        }
+      }
+
+      //게임을 처음 시작할 때 설정
+      function start(){
+        setInterval(update, 20)
+      }
+
+      //캔버스 전체 지우고 다시 그릴 때 설정
+      function update(){
+        ctx.clearRect(0, 0, c.width, c.height)
+        pc.drawing();
+        map.drawing();
+        quest.drawing();
+        myPage.drawing();
+        chat.drawing();
+      }
     </script>
   </body>
 </html>
