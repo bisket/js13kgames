@@ -24,10 +24,12 @@
 
       let c = document.getElementById('C')
       let ctx = c.getContext("2d")
+      let bag;
       window.addEventListener('keydown', function(e){
         if(e.keyCode == 68){pc.x += 5} // D키를 누르면 오른쪽으로 이동
         else if(e.keyCode == 65){pc.x -= 5} // A키를 누르면 왼쪽으로 이동
         else if(e.keyCode == 32){pc.jump()} // 스페이스바를 누르면 점프
+        else if(e.keyCode == 69){bag = true}
       })
 
       // 캐릭터 만들기
@@ -77,6 +79,10 @@
 
         //가방 만들기
         myBag: {
+          open: function(){
+            ctx.fillStyle = 'blue'
+            ctx.fillRect(50, 50, 200, 50)
+          },
           drawing: function(){
             ctx.fillStyle = 'tomato'
             ctx.fillRect(0, c.height-100, 120, 100/3)
@@ -140,6 +146,7 @@
         quest.drawing();
         myPage.drawing();
         chat.drawing();
+        if(bag){myPage.myBag.open()}
       }
     </script>
   </body>
