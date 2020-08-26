@@ -122,8 +122,24 @@
 
       //배경 만들기
       let background = {
+        x:0,
+        y:0,
+        change: function(){
+          if(pc.x<c.width/5){
+            pc.x+=5;
+            this.x+=5
+          }
+          else if(pc.x>c.width/5*3.5) {
+            pc.x-=5;
+            this.x-=5
+          }
+        },
         drawing: function(){
-
+          this.change();
+          ctx.fillStyle = 'skyblue'
+          ctx.fillRect(0+this.x, 0, 600, 300)
+          ctx.fillStyle = 'green'
+          ctx.fillRect(0+this.x, 300, 600, 200)
         }
       }
 
@@ -135,6 +151,7 @@
       //캔버스 전체 지우고 다시 그릴 때 설정
       function update(){
         ctx.clearRect(0, 0, c.width, c.height)
+        background.drawing();
         pc.drawing();
         map.drawing();
         quest.drawing();
