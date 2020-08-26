@@ -24,28 +24,49 @@
 
       let c = document.getElementById('C')
       let ctx = c.getContext("2d")
+      let rightMove, leftMove, lastJump = 0, damaged, jump
       window.addEventListener('keydown', function(e){
-        if(e.keyCode == 68){pc.x += 5} // D키를 누르면 오른쪽으로 이동
-        else if(e.keyCode == 65){pc.x -= 5} // A키를 누르면 왼쪽으로 이동
-        else if(e.keyCode == 32){pc.jump()} // 스페이스바를 누르면 점프
+        if(e.keyCode == 68){rightMove = true} // D키를 누르면 오른쪽으로 이동
+        else if(e.keyCode == 65){leftMove = true} // A키를 누르면 왼쪽으로 이동
+        else if(e.keyCode == 32){jump = true} // 스페이스바를 누르면 점프
+      })
+      window.addEventListener('keyup', function(e){
+        if(e.keyCode == 68){rightMove = false}
+        else if(e.keyCode == 65){leftMove = false}
       })
 
       // 캐릭터 만들기
       let pc = {
+        i: 0,
         x: 300,
-        y: 250,
+        y: 300,
         jump: function(){
-          for(i=0;i<20;i++){
-            if(this.y<250){
-              this.y += i
-            } else {
-              this.y -= i
+            if(this.i<25){
+              this.y -= 6;
+              this.i++
             }
-          }
+            else if(this.i<55){
+              this.y += 5
+              this.i++
+            }
+            else if(this.i == 55){
+              lastJump=50
+              this.i=0
+              jump = false
+            }
         },
-        drawing: function(){
-          ctx.fillStyle = 'red';
-          ctx.fillRect(this.x, this.y, 60, 80);
+        move: function(){
+          if(rightMove){this.x += 5}
+          else if(leftMove){this.x -= 5; rightMove = false}
+          if(jump&&lastJump>50){this.jump()}
+          else if(jump){jump=false}
+        },
+        pos: function(){
+          let a = rightMove ? 'right' : leftMove ? 'left' : 'stop'
+          return a
+        },
+        drawing: function(pos){
+          this.move()
           ctx.fillStyle = 'PeachPuff';
           ctx.fillRect(this.x, this.y, 60, 40)
           ctx.fillStyle = 'purple'
@@ -54,6 +75,47 @@
           ctx.fillRect(this.x, this.y, 20, 15)
           ctx.fillRect(this.x, this.y, 60, 10)
           ctx.fillRect(this.x+25, this.y, 20, 15)
+          ctx.fillRect(this.x+50, this.y, 10, 15)
+          ctx.fillStyle = '#404040'
+          ctx.fillRect(this.x, this.y+40, 60, 25)
+          ctx.fillStyle = 'aliceBlue'
+          ctx.fillRect(this.x, this.y+65, 60, 15)
+          if(pos == 'stop'){
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x+60, this.y-10, 15, 50)
+            ctx.fillRect(this.x+60, this.y+40, 20, 15)
+            ctx.fillRect(this.x, this.y+15, 5, 23)
+            ctx.fillRect(this.x-5, this.y+35, 5, 10)
+            ctx.fillRect(this.x+55, this.y+15, 5, 23)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x+60, this.y, 10, 20)
+            ctx.fillRect(this.x+40, this.y-10, 20, 10)
+          }
+          else if(pos == 'left'){
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x+60, this.y-10, 15, 50)
+            ctx.fillRect(this.x+60, this.y+40, 20, 15)
+            ctx.fillRect(this.x+40, this.y, 20, 40)
+            ctx.fillStyle = 'PeachPuff'
+            ctx.fillRect(this.x+40, this.y+20, 5, 10)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x+60, this.y, 10, 20)
+            ctx.fillRect(this.x+40, this.y-10, 20, 10)
+          }
+          else if(pos == 'right'){
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x-15, this.y-10, 15, 50)
+            ctx.fillRect(this.x-20, this.y+40, 20, 15)
+            ctx.fillRect(this.x, this.y, 20, 40)
+            ctx.fillStyle = 'PeachPuff'
+            ctx.fillRect(this.x+15, this.y+20, 5, 10)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x-10, this.y, 10, 20)
+            ctx.fillRect(this.x, this.y-10, 20, 10)
+          }
+          if(damaged){
+            ctx.fillRect(this.x, this.y, 60, 80);
+          }
         }
       }
 
@@ -140,6 +202,9 @@
           ctx.fillRect(0+this.x, 0, 600, 300)
           ctx.fillStyle = 'green'
           ctx.fillRect(0+this.x, 300, 600, 200)
+          ctx.fillStyle = 'Chocolate '
+          ctx.fillRect(0, 0, c.width, c.height)
+
         }
       }
 
@@ -151,12 +216,13 @@
       //캔버스 전체 지우고 다시 그릴 때 설정
       function update(){
         ctx.clearRect(0, 0, c.width, c.height)
-        background.drawing();
-        pc.drawing();
+        background.drawing()
+        pc.drawing(pc.pos());
         map.drawing();
         quest.drawing();
         myPage.drawing();
         chat.drawing();
+        lastJump += 1
       }
     </script>
   </body>
