@@ -39,21 +39,20 @@
       let pc = {
         i: 0,
         x: 300,
-        y: 250,
-        gravity: 5,
+        y: 300,
         jump: function(){
             if(this.i<25){
-              this.y -= this.gravity;
+              this.y -= 6;
               this.i++
             }
-            else if(this.i<50){
-              this.y += this.gravity;
+            else if(this.i<55){
+              this.y += 5
               this.i++
             }
-            else if(this.i == 50){
+            else if(this.i == 55){
               lastJump=50
               this.i=0
-              jump = false;
+              jump = false
             }
         },
         move: function(){
