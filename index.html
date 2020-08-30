@@ -105,7 +105,7 @@
             ctx.fillStyle = 'salmon'
             ctx.fillRect(0, c.height-y, 120, 100/3)
           }
-        }
+        },
         //스테이터스2 (하트 - 장애물과 부딪히면 줄어듬)
         heart: {
           drawing: function(){
@@ -122,4 +122,27 @@
           }
         }
       }
+
+      //배경 만들기
+      let background = {
+        drawing: function(){
+
+        }
+      }
+
+      //게임을 처음 시작할 때 설정
+      function start(){
+        setInterval(update, 20)
+      }
+
+      //캔버스 전체 지우고 다시 그릴 때 설정
+      function update(){
+        ctx.clearRect(0, 0, c.width, c.height)
+        pc.drawing();
+        map.drawing();
+        quest.drawing();
+        myPage.drawing();
+        chat.drawing();
+      }
+</script>
 </html>
