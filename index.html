@@ -120,6 +120,24 @@
             ctx.fill();
             ctx.arc(50, 50, 25, 0, 2*Math.PI)
           }
+        },
+        // 3단 그라데이션
+        drawing: function(){
+          ctx.fillRect(0, c.height-this.y, 120, this.y)
+          this.myBag.drawing()
+          this.myStat.drawing()
+          this.heart.drawing()
+          this.heart.lifeDraw();
+        }
+      }
+
+      //채팅 표시 만들기
+      let chat = {
+        x: 680,
+        y: 100,
+        drawing: function(){
+          ctx.fillStyle = 'lightgray'
+          ctx.fillRect(c.width-this.x, c.height-this.y, this.x, this.y)
         }
       }
 
