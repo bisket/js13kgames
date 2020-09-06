@@ -151,8 +151,23 @@
       //퀘스트창 만들기
       let quest = {
         x: 200,
+        chap: [['배달 - 5', '죽지 않고 돌아오기'], ['배달 - 10', '생명 20% 이내로 돌아오기', '아이템 1회 사용하기'], ['배달 - 15', '생명 25% 이내로 돌아오기', '촛불 5% 이내로 돌아오기'], ['배달 - 20', '생명 25% 이내로 돌아오기', '아이템 사용하지 않기']],
+        setQuest: function(){
+          ctx.fillStyle = "black"
+          ctx.font = "20px selif"
+          let i = 2, j, h = 20;
+          if(i){
+
+          }
+          for (j = 0; j < this.chap[i].length; j++) {
+            ctx.fillText(this.chap[i-1][j], c.width-this.x, h)
+            h += 30
+          }
+        },
         drawing: function(){
+          ctx.fillStyle = 'PeachPuff'
           ctx.fillRect(c.width-this.x, 0, this.x, 100)
+          this.setQuest();
         }
       }
 
@@ -190,22 +205,31 @@
             ctx.fillRect(0, c.height-y, 120, 100/3)
           }
         },
-
-        //기타 등등.
-        etc: {
+        //스테이터스2 (하트 - 장애물과 부딪히면 줄어듬)
+        heart: {
           drawing: function(){
             let y = (100/3)
             ctx.fillStyle = 'pink'
             ctx.fillRect(0, c.height-y, 120, 100/3)
+            this.lifeDraw();
+          },
+          lifeDraw: function(){
+            ctx.fillStyle = 'hotpink'
+            ctx.arc(100, 50, 25, 0*Math.PI, 2*Math.PI)
+            ctx.fill();
+            ctx.arc(50, 50, 25, 0, 2*Math.PI);
+            ctx.fill()
+            ctx.beginPath(ctx.moveTo(30,100))
+            ctx.lineTo(75,100)
           }
         },
-
         // 3단 그라데이션
         drawing: function(){
           ctx.fillRect(0, c.height-this.y, 120, this.y)
           this.myBag.drawing()
           this.myStat.drawing()
-          this.etc.drawing()
+          this.heart.drawing()
+          this.heart.lifeDraw();
         }
       }
 
@@ -480,6 +504,5 @@
         lastJump += 1
         if(bag){myPage.myBag.open()}
       }
-    </script>
-  </body>
+</script>
 </html>
