@@ -212,15 +212,18 @@
             ctx.fillStyle = 'pink'
             ctx.fillRect(0, c.height-y, 120, 100/3)
             this.lifeDraw();
+
           },
           lifeDraw: function(){
+            ctx.beginPath()
             ctx.fillStyle = 'hotpink'
-            ctx.arc(100, 50, 25, 0*Math.PI, 2*Math.PI)
+            ctx.arc(110, 50, 25, 0*Math.PI, 2*Math.PI)
             ctx.fill();
-            ctx.arc(50, 50, 25, 0, 2*Math.PI);
-            ctx.fill()
-            ctx.beginPath(ctx.moveTo(30,100))
-            ctx.lineTo(75,100)
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(40, 50, 25, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.stroke();
           }
         },
         // 3단 그라데이션
@@ -400,78 +403,85 @@
         b2 = new box(1000, 200, 50, 20)
         s1 = new stone(1500, 250, 100, 100)
       }
-      
-            let circle1 = {
-        k: 0,
-        b: 2,
+
+      let circle1 = {
+        k: -0.5,
+        b: 1.5,
+        a: 125,
         drawing1 : function(){
         ctx.beginPath();
-        ctx.fillStyle = 'black'
+        ctx.fillStyle = 'white'
+
+        ctx.moveTo(680,this.a);
         ctx.arc(680, 125, 15, this.k*Math.PI, this.b * Math.PI);
+        ctx.fill();
         ctx.stroke();ctx.beginPath();
         }
       }
       let circle2 = {
-        c: 0,
-        d: 2,
+        c: -0.5,
+        d: 1.5,
+        a: 125,
         drawing2 : function(){
         ctx.beginPath();
-        ctx.fillStyle = 'black'
+        ctx.fillStyle = 'white'
+        ctx.moveTo(725,this.a);
         ctx.arc(725, 125, 15, this.c* Math.PI, this.d * Math.PI);
+        ctx.fill();
         ctx.stroke();ctx.beginPath();
         }
       }
       let circle3 = {
-        e: 0,
-        f: 2,
+        e: -0.5,
+        f: 1.5,
+        a: 125,
         drawing3 : function(){
         ctx.beginPath();
-        ctx.fillStyle = 'black'
+        ctx.fillStyle = 'white'
+        ctx.moveTo(770,this.a);
         ctx.arc(770, 125, 15,this.e* Math.PI, this.f * Math.PI);
+        ctx.fill();
         ctx.stroke();
       }
     }
       function TimeLimit1(){
         ctx.clearRect(0,0, c.width,c.height);
-        circle3.e=circle3.e+0.1;
         circle3.f=circle3.f-0.1;
         circle1.drawing1();
         circle2.drawing2();
         circle3.drawing3();
-        if(circle3.e>=1 && circle3.f<=1){
+        if(circle3.f<=-0.5){
           clearInterval(start1);
           //ctx.clearRect(0,0, c.width,c.height);
           circle1.drawing1();
           circle2.drawing2();
-          start2 = setInterval(TimeLimit2, 500);
+          start2 = setInterval(TimeLimit2, 250);
         }
       }
       function TimeLimit2(){
         ctx.clearRect(0,0, c.width,c.height);
-        circle2.c=circle2.c+0.1;
         circle2.d=circle2.d-0.1;
         circle1.drawing1();
         circle2.drawing2();
-        if(circle2.c>=1 && circle2.d<=1){
+        if(circle2.d<=-0.5){
           clearInterval(start2);
           //ctx.clearRect(0,0, c.width,c.height);
           circle1.drawing1();
-          start3 = setInterval(TimeLimit3, 500);
+          start3 = setInterval(TimeLimit3, 250);
           }
       }
       function TimeLimit3(){
         ctx.clearRect(0,0, c.width,c.height);
-        circle1.k=circle1.k+0.1;
         circle1.b=circle1.b-0.1;
         circle1.drawing1();
-        if(circle1.k>=1 && circle1.b<=1){
+        if(circle1.b<=-0.5){
           clearInterval(start3);
           alert("Time Over");
           //ctx.clearRect(0,0, c.width,c.height);
           //self.close();
         }
       }
-      let start1 = setInterval(TimeLimit1, 500);
+      let start1 = setInterval(TimeLimit1, 250);
 
       //게임을 처음 시작할 때 설정
       function start(){
@@ -492,15 +502,15 @@
         circle1.drawing1();
         circle2.drawing2();
         circle3.drawing3();
-        if(circle3.e>=0.9 && circle3.f<=1.1){
-          circle3.e=1;
-          circle3.f=1;}
-        if(circle1.k>=0.9 && circle1.b<=1.1){
-          circle1.k=1;
-          circle1.b=1;}
-        if(circle2.c>=0.9 && circle2.d<=1.1){
-          circle2.c=1;
-          circle2.d=1;}
+        if(circle3.f<=-0.5){
+          circle3.a=110;
+          circle3.f=-0.5;}
+        if(circle1.b<=-0.5){
+          circle1.a=110;
+          circle1.b=-0.5;}
+        if(circle2.d<=-0.5){
+          circle2.a=110;
+          circle2.d=-0.5;}
         lastJump += 1
         if(bag){myPage.myBag.open()}
       }
