@@ -24,12 +24,13 @@
 
       let c = document.getElementById('C')
       let ctx = c.getContext("2d")
+      let rightMove, leftMove, lastJump = 0, damaged, jump
       let bag, a;
       let item, b;
       window.addEventListener('keydown', function(e){
-        if(e.keyCode == 68){pc.x += 5} // D키를 누르면 오른쪽으로 이동
-        else if(e.keyCode == 65){pc.x -= 5} // A키를 누르면 왼쪽으로 이동
-        else if(e.keyCode == 32){pc.jump()} // 스페이스바를 누르면 점프
+        if(e.keyCode == 68){rightMove = true} // D키를 누르면 오른쪽으로 이동
+        else if(e.keyCode == 65){leftMove = true} // A키를 누르면 왼쪽으로 이동
+        else if(e.keyCode == 32){jump = true} // 스페이스바를 누르면 점프
         else if(e.keyCode == 69){
           if(!a){
             bag = true
@@ -38,6 +39,10 @@
           else{bag = false; a=false}
         }
       })
+      window.addEventListener('keyup', function(e){
+        if(e.keyCode == 68){rightMove = false}
+        else if(e.keyCode == 65){leftMove = false}
+      })
         else if(e.keyCode == 49){
           if (!b){
             item = true
@@ -45,22 +50,45 @@
           }
           else{item = false; b = false}
         })
+        
       // 캐릭터 만들기
       let pc = {
+        i: 0,
         x: 300,
-        y: 250,
+        y: 300,
+        xmove: 0,
+        ymove: 0,
         jump: function(){
-          for(i=0;i<20;i++){
-            if(this.y<250){
-              this.y += i
-            } else {
-              this.y -= i
+            if(this.i<25){
+              this.ymove = -6
+              this.i++
             }
-          }
+            else if(this.i<55){
+              this.ymove = 5
+              this.i++
+            }
+            else if(this.i == 55){
+              lastJump=50
+              this.i=0
+              jump = false
+              this.ymove = 0
+            }
         },
-        drawing: function(){
-          ctx.fillStyle = 'red';
-          ctx.fillRect(this.x, this.y, 60, 80);
+        move: function(){
+          if(rightMove){this.xmove = 5}
+          else if(leftMove){this.xmove = -5; rightMove = false}
+          else(this.xmove = 0)
+          if(jump&&lastJump>50){this.jump()}
+          else if(jump){jump=false}
+          this.x += this.xmove
+          this.y += this.ymove
+        },
+        pos: function(){
+          let a = rightMove ? 'right' : leftMove ? 'left' : 'stop'
+          return a
+        },
+        drawing: function(pos){
+          this.move()
           ctx.fillStyle = 'PeachPuff';
           ctx.fillRect(this.x, this.y, 60, 40)
           ctx.fillStyle = 'purple'
@@ -69,6 +97,47 @@
           ctx.fillRect(this.x, this.y, 20, 15)
           ctx.fillRect(this.x, this.y, 60, 10)
           ctx.fillRect(this.x+25, this.y, 20, 15)
+          ctx.fillRect(this.x+50, this.y, 10, 15)
+          ctx.fillStyle = '#404040'
+          ctx.fillRect(this.x, this.y+40, 60, 25)
+          ctx.fillStyle = 'aliceBlue'
+          ctx.fillRect(this.x, this.y+65, 60, 15)
+          if(pos == 'stop'){
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x+60, this.y-10, 15, 50)
+            ctx.fillRect(this.x+60, this.y+40, 20, 15)
+            ctx.fillRect(this.x, this.y+15, 5, 23)
+            ctx.fillRect(this.x-5, this.y+35, 5, 10)
+            ctx.fillRect(this.x+55, this.y+15, 5, 23)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x+60, this.y, 10, 20)
+            ctx.fillRect(this.x+40, this.y-10, 20, 10)
+          }
+          else if(pos == 'left'){
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x+60, this.y-10, 15, 50)
+            ctx.fillRect(this.x+60, this.y+40, 20, 15)
+            ctx.fillRect(this.x+40, this.y, 20, 40)
+            ctx.fillStyle = 'PeachPuff'
+            ctx.fillRect(this.x+40, this.y+20, 5, 10)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x+60, this.y, 10, 20)
+            ctx.fillRect(this.x+40, this.y-10, 20, 10)
+          }
+          else if(pos == 'right'){
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x-15, this.y-10, 15, 50)
+            ctx.fillRect(this.x-20, this.y+40, 20, 15)
+            ctx.fillRect(this.x, this.y, 20, 40)
+            ctx.fillStyle = 'PeachPuff'
+            ctx.fillRect(this.x+15, this.y+20, 5, 10)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x-10, this.y, 10, 20)
+            ctx.fillRect(this.x, this.y-10, 20, 10)
+          }
+          if(damaged){
+            ctx.fillRect(this.x, this.y, 60, 80);
+          }
         }
       }
 
@@ -152,25 +221,181 @@
 
       //배경 만들기
       let background = {
+        x:0,
+        y:0,
+        change: function(){
+          if(pc.x<c.width/3){
+            pc.x+=5;
+            this.x+=5
+          }
+          else if(pc.x>c.width/2) {
+            pc.x-=5;
+            this.x-=5
+          }
+        },
         drawing: function(){
-
+          this.change();
+          ctx.fillStyle = 'skyblue'
+          ctx.fillRect(0+this.x, 0, 600, 350)
+          ctx.fillStyle = 'green'
+          ctx.fillRect(0+this.x, 350, 600, 200)
+          ctx.fillStyle = 'chocolate'
+          ctx.fillRect(600+this.x, 0, 1000, c.height)
+          ctx.fillStyle = 'brown'
+          ctx.fillRect(600+this.x, 350, 1000, 200)
+          this.stDraw();
+        },
+        stDraw: function(){
+          this.drawDoor(700, 230, 101)
+          b1.drawing();
+          b1.block();
+          b2.drawing();
+          b2.block();
+          s1.drawing();
+        },
+        drawDoor: function(x, y, num){
+          x += this.x
+          ctx.fillStyle = 'brown'
+          ctx.fillRect(x, y, 80, 120)
+          ctx.fillStyle = 'BurlyWood '
+          ctx.fillRect(x+5, y+5, 70, 110)
+          ctx.fillStyle = 'white'
+          ctx.fillRect(x+10, y+10, 60, 30)
+          ctx.fillStyle = 'black'
+          ctx.font = '30px sans'
+          ctx.fillText(num, x+15, y+40)
         }
       }
 
+      function st(){}
+      st.prototype.isTouched = function(){
+        this.blocked = true;
+        if(this.y+this.height<pc.y){
+          this.blocked = false;
+          on = false;
+        }
+        if(this.y>pc.y+pc.height){
+          this.blocked = false
+          left
+        }
+        if(this.x+background.x<pc.x+pc.width){
+          this.blocked = false;
+        }
+        if(this.x+background.x+this.width<pc.x){
+          this.blocked = false;
+        }
+      }
+      st.prototype.block = function(){
+        this.blocked = true;
+        if(this.y+this.height<pc.y){
+          this.blocked = false;
+        } else if(this.y>pc.y+pc.height){
+          this.blocked = false;
+        } else if(this.x+background.x<pc.x+pc.width){
+          this.blocked = false;
+        } else if(this.x+background.x+this.width<pc.x){
+          this.blocked = false;
+        }
+        if(this.x+background.x<pc.x+80&&this.x+background.x+this.width<pc.x&&(this.y>pc.y+120||this.y+this.height>pc.y)){
+          if(this.movable){
+            this.x += 5-this.weight
+            pc.xmove -= 5-this.weight
+          }
+          else{
+            pc.xmove = 0
+          }
+        }
+      }
+      st.prototype.move = function(direction, px){
+        let d = ['left', 'right', 'up', 'down']
+        for(let i in d){
+          if(d[i]==direction){
+            if(i==0){
+              this.x -= px
+            }
+            else if (i==1){
+              this.x += px
+            }
+            else if (i==2){
+              this.y -= px
+            }
+            else{
+              this.y += px
+            }
+            return d[i]
+          }
+        }
+      }
+      st.prototype.act = function(){
+        this.drawing();
+        this.block();
+      }
+      function bar(x, y, width, height){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+      bar.prototype = new st;
+      bar.prototype.movable = false;
+      bar.prototype.drawing = function(){
+        ctx.fillStyle = 'brown'
+        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
+      }
+
+      function box(x, y, width, height){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+      box.prototype = new st;
+      box.prototype.movable = true;
+      box.prototype.weight = 2
+      box.prototype.drawing = function(){
+        ctx.fillStyle = 'burlywood'
+        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
+      }
+
+      function stone(x, y, width, height){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+      stone.prototype = new st;
+      stone.prototype.moveable = true;
+      stone.prototype.weight = 5;
+      stone.prototype.drawing = function(){
+        ctx.fillStyle = 'slategray'
+        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
+      }
+
+      function makeSt(){
+        b1 = new bar(1200, 300, 150, 50)
+        b2 = new box(1000, 200, 50, 20)
+        s1 = new stone(1500, 250, 100, 100)
+      }
       //게임을 처음 시작할 때 설정
       function start(){
         setInterval(update, 20)
+        pc.nowx = pc.x-background.x+80;
+        makeSt();
       }
 
       //캔버스 전체 지우고 다시 그릴 때 설정
       function update(){
         ctx.clearRect(0, 0, c.width, c.height)
-        pc.drawing();
+        background.drawing()
+        pc.drawing(pc.pos());
         map.drawing();
         quest.drawing();
         myPage.drawing();
         chat.drawing();
+
+        lastJump += 1
         if(bag){myPage.myBag.open()}
+
       }
     </script>
   </body>
