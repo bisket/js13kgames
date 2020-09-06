@@ -376,6 +376,79 @@
         b2 = new box(1000, 200, 50, 20)
         s1 = new stone(1500, 250, 100, 100)
       }
+      
+            let circle1 = {
+        k: 0,
+        b: 2,
+        drawing1 : function(){
+        ctx.beginPath();
+        ctx.fillStyle = 'black'
+        ctx.arc(680, 125, 15, this.k*Math.PI, this.b * Math.PI);
+        ctx.stroke();ctx.beginPath();
+        }
+      }
+      let circle2 = {
+        c: 0,
+        d: 2,
+        drawing2 : function(){
+        ctx.beginPath();
+        ctx.fillStyle = 'black'
+        ctx.arc(725, 125, 15, this.c* Math.PI, this.d * Math.PI);
+        ctx.stroke();ctx.beginPath();
+        }
+      }
+      let circle3 = {
+        e: 0,
+        f: 2,
+        drawing3 : function(){
+        ctx.beginPath();
+        ctx.fillStyle = 'black'
+        ctx.arc(770, 125, 15,this.e* Math.PI, this.f * Math.PI);
+        ctx.stroke();
+      }
+    }
+      function TimeLimit1(){
+        ctx.clearRect(0,0, c.width,c.height);
+        circle3.e=circle3.e+0.1;
+        circle3.f=circle3.f-0.1;
+        circle1.drawing1();
+        circle2.drawing2();
+        circle3.drawing3();
+        if(circle3.e>=1 && circle3.f<=1){
+          clearInterval(start1);
+          //ctx.clearRect(0,0, c.width,c.height);
+          circle1.drawing1();
+          circle2.drawing2();
+          start2 = setInterval(TimeLimit2, 500);
+        }
+      }
+      function TimeLimit2(){
+        ctx.clearRect(0,0, c.width,c.height);
+        circle2.c=circle2.c+0.1;
+        circle2.d=circle2.d-0.1;
+        circle1.drawing1();
+        circle2.drawing2();
+        if(circle2.c>=1 && circle2.d<=1){
+          clearInterval(start2);
+          //ctx.clearRect(0,0, c.width,c.height);
+          circle1.drawing1();
+          start3 = setInterval(TimeLimit3, 500);
+          }
+      }
+      function TimeLimit3(){
+        ctx.clearRect(0,0, c.width,c.height);
+        circle1.k=circle1.k+0.1;
+        circle1.b=circle1.b-0.1;
+        circle1.drawing1();
+        if(circle1.k>=1 && circle1.b<=1){
+          clearInterval(start3);
+          alert("Time Over");
+          //ctx.clearRect(0,0, c.width,c.height);
+          //self.close();
+        }
+      }
+      let start1 = setInterval(TimeLimit1, 500);
+
       //게임을 처음 시작할 때 설정
       function start(){
         setInterval(update, 20)
@@ -392,10 +465,20 @@
         quest.drawing();
         myPage.drawing();
         chat.drawing();
-
+        circle1.drawing1();
+        circle2.drawing2();
+        circle3.drawing3();
+        if(circle3.e>=0.9 && circle3.f<=1.1){
+          circle3.e=1;
+          circle3.f=1;}
+        if(circle1.k>=0.9 && circle1.b<=1.1){
+          circle1.k=1;
+          circle1.b=1;}
+        if(circle2.c>=0.9 && circle2.d<=1.1){
+          circle2.c=1;
+          circle2.d=1;}
         lastJump += 1
         if(bag){myPage.myBag.open()}
-
       }
     </script>
   </body>
