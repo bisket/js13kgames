@@ -25,6 +25,7 @@
       let c = document.getElementById('C')
       let ctx = c.getContext("2d")
       let rightMove, leftMove, lastJump = 0, damaged, jump
+      let inven = [false, false, false, false, false]
       let bag, a;
       let item, b;
       window.addEventListener('keydown', function(e){
@@ -39,15 +40,25 @@
           else{bag = false; a=false}
         }
       })
+      let keys = [49, 50, 51, 52, 53]
+
       window.addEventListener('keyup', function(e){
         if(e.keyCode == 68){rightMove = false}
         else if(e.keyCode == 65){leftMove = false}
-        else if(e.keyCode == 49){
-          if (!b){
-            item = true
-            b = true
+        for(i in keys){
+          if(e.keyCode == keys[i]&&inven[i]){
+            if(i = 0){
+              alert(i);
+            } else if(i = 1){
+              alert(i);
+            } else if(i = 2){
+              alert(i);
+            } else if(i = 3){
+              alert(i);
+            } else if(i = 4){
+              alert(i);
+            }
           }
-          else{item = false; b = false}
         }
       })
 
@@ -226,6 +237,7 @@
             ctx.stroke();
           }
         },
+
         // 3단 그라데이션
         drawing: function(){
           ctx.fillRect(0, c.height-this.y, 120, this.y)
@@ -404,10 +416,16 @@
         s1 = new stone(1500, 250, 100, 100)
       }
 
+<<<<<<< HEAD
       let circle1 = {
         k: -0.5,
         b: 1.5,
         a: 125,
+=======
+            let circle1 = {
+        k: 0,
+        b: 2,
+>>>>>>> 474d946b4b2b0bb0438512ceaf927a1608d33837
         drawing1 : function(){
         ctx.beginPath();
         ctx.fillStyle = 'white'
@@ -514,5 +532,6 @@
         lastJump += 1
         if(bag){myPage.myBag.open()}
       }
-</script>
+    </script>
+  </body>
 </html>
