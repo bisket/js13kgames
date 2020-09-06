@@ -25,6 +25,7 @@
       let c = document.getElementById('C')
       let ctx = c.getContext("2d")
       let bag, a;
+      let item, b;
       window.addEventListener('keydown', function(e){
         if(e.keyCode == 68){pc.x += 5} // D키를 누르면 오른쪽으로 이동
         else if(e.keyCode == 65){pc.x -= 5} // A키를 누르면 왼쪽으로 이동
@@ -37,7 +38,13 @@
           else{bag = false; a=false}
         }
       })
-
+        else if(e.keyCode == 49){
+          if (!b){
+            item = true
+            b = true
+          }
+          else{item = false; b = false}
+        })
       // 캐릭터 만들기
       let pc = {
         x: 300,
@@ -87,7 +94,7 @@
         myBag: {
           open: function(){
             ctx.fillStyle = 'cyan'
-            ctx.fillRect(150,0,450,60)
+            ctx.fillRect(150,0,450,90)
           },
           a: {
             close:function(){
@@ -100,6 +107,12 @@
             ctx.fillRect(0, c.height-100, 120, 100/3)
           }
         },
+        myitem: {
+            open:  function(){
+            ctx. fillStyle = 'blue'
+            ctx. fillRect(150,0,500,100)
+          }
+        }
         //스테이터스 만들기 (램프 시간 표시)
         myStat: {
           drawing: function(){
