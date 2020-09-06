@@ -118,7 +118,10 @@
             ctx.fillStyle = 'hotpink'
             ctx.arc(100, 50, 25, 0*Math.PI, 2*Math.PI)
             ctx.fill();
-            ctx.arc(50, 50, 25, 0, 2*Math.PI)
+            ctx.arc(50, 50, 25, 0, 2*Math.PI);
+            ctx.fill()
+            ctx.beginPath(ctx.moveTo(30,100))
+            ctx.lineTo(75,100)
           }
         },
         // 3단 그라데이션
