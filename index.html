@@ -40,26 +40,32 @@
         i: 0,
         x: 300,
         y: 300,
+        xmove: 0,
+        ymove: 0,
         jump: function(){
             if(this.i<25){
-              this.y -= 6;
+              this.ymove = -6
               this.i++
             }
             else if(this.i<55){
-              this.y += 5
+              this.ymove = 5
               this.i++
             }
             else if(this.i == 55){
               lastJump=50
               this.i=0
               jump = false
+              this.ymove = 0
             }
         },
         move: function(){
-          if(rightMove){this.x += 5}
-          else if(leftMove){this.x -= 5; rightMove = false}
+          if(rightMove){this.xmove = 5}
+          else if(leftMove){this.xmove = -5; rightMove = false}
+          else(this.xmove = 0)
           if(jump&&lastJump>50){this.jump()}
           else if(jump){jump=false}
+          this.x += this.xmove
+          this.y += this.ymove
         },
         pos: function(){
           let a = rightMove ? 'right' : leftMove ? 'left' : 'stop'
@@ -210,11 +216,11 @@
         },
         stDraw: function(){
           this.drawDoor(700, 230, 101)
-          b1 = new bar(1200, 300, 150, 50)
-          b2 = new box(1000, 200, 50, 20)
+          b1.drawing();
           b1.block();
-          b2.move('down', 5)
+          b2.drawing();
           b2.block();
+          s1.drawing();
         },
         drawDoor: function(x, y, num){
           x += this.x
@@ -231,14 +237,41 @@
       }
 
       function st(){}
+      st.prototype.isTouched = function(){
+        this.blocked = true;
+        if(this.y+this.height<pc.y){
+          this.blocked = false;
+          on = false;
+        }
+        if(this.y>pc.y+pc.height){
+          this.blocked = false
+          left
+        }
+        if(this.x+background.x<pc.x+pc.width){
+          this.blocked = false;
+        }
+        if(this.x+background.x+this.width<pc.x){
+          this.blocked = false;
+        }
+      }
       st.prototype.block = function(){
-        if(this.x+background.x==pc.x+80&&(this.y>pc.y+120||this.y+this.height>pc.y)){
+        this.blocked = true;
+        if(this.y+this.height<pc.y){
+          this.blocked = false;
+        } else if(this.y>pc.y+pc.height){
+          this.blocked = false;
+        } else if(this.x+background.x<pc.x+pc.width){
+          this.blocked = false;
+        } else if(this.x+background.x+this.width<pc.x){
+          this.blocked = false;
+        }
+        if(this.x+background.x<pc.x+80&&this.x+background.x+this.width<pc.x&&(this.y>pc.y+120||this.y+this.height>pc.y)){
           if(this.movable){
-            this.x += this.weight
-            pc.x -= 5-this.weight
+            this.x += 5-this.weight
+            pc.xmove -= 5-this.weight
           }
           else{
-            pc.x = this.x+background.x-80
+            pc.xmove = 0
           }
         }
       }
@@ -262,32 +295,61 @@
           }
         }
       }
+      st.prototype.act = function(){
+        this.drawing();
+        this.block();
+      }
       function bar(x, y, width, height){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        ctx.fillStyle = 'brown';
-        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
       }
       bar.prototype = new st;
       bar.prototype.movable = false;
+      bar.prototype.drawing = function(){
+        ctx.fillStyle = 'brown'
+        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
+      }
 
       function box(x, y, width, height){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        ctx.fillStyle = 'burlywood'
-        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
       }
       box.prototype = new st;
       box.prototype.movable = true;
       box.prototype.weight = 2
+      box.prototype.drawing = function(){
+        ctx.fillStyle = 'burlywood'
+        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
+      }
 
+      function stone(x, y, width, height){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+      stone.prototype = new st;
+      stone.prototype.moveable = true;
+      stone.prototype.weight = 5;
+      stone.prototype.drawing = function(){
+        ctx.fillStyle = 'slategray'
+        ctx.fillRect(this.x+background.x, this.y, this.width, this.height)
+      }
+
+      function makeSt(){
+        b1 = new bar(1200, 300, 150, 50)
+        b2 = new box(1000, 200, 50, 20)
+        s1 = new stone(1500, 250, 100, 100)
+      }
       //게임을 처음 시작할 때 설정
       function start(){
         setInterval(update, 20)
+        pc.nowx = pc.x-background.x+80;
+        makeSt();
       }
 
       //캔버스 전체 지우고 다시 그릴 때 설정
