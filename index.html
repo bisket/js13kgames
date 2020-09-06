@@ -42,15 +42,15 @@
       window.addEventListener('keyup', function(e){
         if(e.keyCode == 68){rightMove = false}
         else if(e.keyCode == 65){leftMove = false}
-      })
         else if(e.keyCode == 49){
           if (!b){
             item = true
             b = true
           }
           else{item = false; b = false}
-        })
-        
+        }
+      })
+
       // 캐릭터 만들기
       let pc = {
         i: 0,
@@ -181,7 +181,7 @@
             ctx. fillStyle = 'blue'
             ctx. fillRect(150,0,500,100)
           }
-        }
+        },
         //스테이터스 만들기 (램프 시간 표시)
         myStat: {
           drawing: function(){
